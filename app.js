@@ -1,4 +1,5 @@
 //jshint esversion:6
+require('dotenv').config()
 const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
@@ -18,8 +19,8 @@ email: String,
 password: String
 });
 
-var secret = "ThisIsASecret.";
-userSchema.plugin(encrypt, { secret: secret, encryptedFields: ["password"]});
+
+userSchema.plugin(encrypt, { secret: process.env.SECRET, encryptedFields: ["password"]});
 
 const User = mongoose.model("User", userSchema);
 
@@ -49,6 +50,7 @@ app.post("/register", function(req, res){
         newUser.save(function(err){
           if(err){
             console.log(err);
+
           }else{
             res.render("secrets");
           }
@@ -71,6 +73,7 @@ app.post("/login", function(req, res){
       if(foundUser){
         if(foundUser.password === password){
           res.render("secrets");
+          console.log(secret);
         }else{
           res.send("Incorrect Password");
         }
